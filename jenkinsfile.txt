@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                echo 'Pulling the latest code from our repository...'
+            }
+        }
+        
+        stage('Run Unit Tests') {
+            steps {
+                echo 'Executing automated testing suite...'
+                bat 'python test.py'
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo 'Deploying application to production environment...'
+                bat 'python app.py'
+            }
+        }
+    }
+}
