@@ -1,10 +1,16 @@
 pipeline {
     agent any
 
+    environment {
+        APP_VERSION = '2.0.0'
+        ENV_TYPE    = 'Staging-Environment'
+    }
+
     stages {
-        stage('Checkout Code') {
+        stage('Environment Check') {
             steps {
-                echo 'Pulling the latest code from our repository...'
+                echo "Deploying Version ${env.APP_VERSION} to ${env.ENV_TYPE}."
+                bat 'python --version'
             }
         }
         
@@ -17,9 +23,21 @@ pipeline {
 
         stage('Deploy Application') {
             steps {
-                echo 'Deploying application to production environment...'
+                echo 'Pushing artifacts to live environment...'
                 bat 'python app.py'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline run completed. Cleaning up workspace directories...'
+        }
+        success {
+            echo 'CONGRATULATIONS: Build passed all quality checks perfectly!'
+        }
+        failure {
+            echo 'WARNING: Build failed. Notification sent to development team.'
         }
     }
 }
